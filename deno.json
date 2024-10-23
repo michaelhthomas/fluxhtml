@@ -1,6 +1,6 @@
 {
 	"name": "@michaelhthomas/fluxhtml",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"exports": {
 		".": "./src/index.ts",
 		"./selector": "./src/selector.ts",
