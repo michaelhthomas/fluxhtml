@@ -1,4 +1,4 @@
-import { Parser } from "htmlparser2";
+import { Parser, type ParserOptions } from "htmlparser2";
 
 // #region constants
 export const DOCUMENT_NODE = 0;
@@ -146,7 +146,10 @@ function hasChildren(node: Node): node is NodeWithChildren {
  * @param html A string of HTML-like markup.
  * @returns The parsed document.
  */
-export function parse(html: string): DocumentNode {
+export function parse(
+	html: string,
+	options: ParserOptions = { decodeEntities: false },
+): DocumentNode {
 	const doc: DocumentNode = {
 		type: DOCUMENT_NODE,
 		children: [],
@@ -211,7 +214,7 @@ export function parse(html: string): DocumentNode {
 				currentNode = stack.pop() ?? doc;
 			},
 		},
-		{ decodeEntities: true },
+		options,
 	);
 
 	parser.write(html);
@@ -237,7 +240,10 @@ export function __unsafeHTML(str: string): UnsafeHTML {
  * @param node Node to assign a custom render function.
  * @param fn Render function.
  */
-export function __unsafeRenderFn(node: ElementNode, fn: RenderFunction): ElementNode {
+export function __unsafeRenderFn(
+	node: ElementNode,
+	fn: RenderFunction,
+): ElementNode {
 	Object.defineProperty(node, RenderFn, {
 		value: fn,
 		enumerable: false,
