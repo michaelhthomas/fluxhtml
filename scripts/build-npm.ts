@@ -8,10 +8,11 @@ await build({
 	test: false,
 	entryPoints: [
 		"./src/index.ts",
-		"./src/selector.ts",
-		...Array.from(expandGlobSync("./src/transformers/*.ts")).map(
-			(ent) => `./src/transformers/${ent.name}`,
-		),
+		{ name: "./selector", path: "./src/selector.ts" },
+		...Array.from(expandGlobSync("./src/transformers/*.ts")).map((ent) => ({
+			name: `./transformers/${ent.name.split(".")[0]}`,
+			path: ent.path,
+		})),
 	],
 	outDir: "./npm",
 	shims: {
