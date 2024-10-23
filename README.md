@@ -4,11 +4,14 @@ Easily parse, transform, and serialize HTML-like markup languages.
 
 ## Features
 
-- Parses HTML using `htmlparser2`, a "fast and loose" parser that supports parsing many HTML-like markup languages, including HTML, Astro, Vue, and Svelte.
+- Parses HTML using `htmlparser2`, a "fast and loose" parser that supports
+  parsing many HTML-like markup languages, including HTML, Astro, Vue, and
+  Svelte.
 - High-level API for interacting with and transforming the document.
 - Built-in AST walk utility
 - Built-in transform utility for easy output manipulation
-- Handy `html` template utility: trivially create render functions from HTML syntax
+- Handy `html` template utility: trivially create render functions from HTML
+  syntax
 - `querySelector` and `querySelectorAll` support using `fluxhtml/selector`
 
 ## Installation
@@ -21,12 +24,14 @@ Easily parse, transform, and serialize HTML-like markup languages.
 
 ### `walk`
 
-The `walk` function provides full control over the AST. It can be used to scan for text, elements, components, or any other validation you might want to do.
+The `walk` function provides full control over the AST. It can be used to scan
+for text, elements, components, or any other validation you might want to do.
 
-> **Note** > `walk` is `async` and **must** be `await`ed. Use `walkSync` if the provided callback is synchronous.
+> **Note** > `walk` is `async` and **must** be `await`ed. Use `walkSync` if the
+> provided callback is synchronous.
 
 ```js
-import { parse, walk, ELEMENT_NODE } from "fluxhtml";
+import { ELEMENT_NODE, parse, walk } from "fluxhtml";
 
 const ast = parse(`<h1>Hello world!</h1>`);
 await walk(ast, async (node) => {
@@ -41,7 +46,7 @@ await walk(ast, async (node) => {
 The `walkSync` function is identical to the `walk` function, but is synchronous.
 
 ```js
-import { parse, walkSync, ELEMENT_NODE } from "fluxhtml";
+import { ELEMENT_NODE, parse, walkSync } from "fluxhtml";
 
 const ast = parse(`<h1>Hello world!</h1>`);
 walkSync(ast, (node) => {
@@ -55,8 +60,8 @@ walkSync(ast, (node) => {
 
 The `render` function allows you to serialize an AST back into a string.
 
-> **Note**
-> By default, `render` will sanitize your markup, removing any `script` tags. Pass `{ sanitize: false }` to disable this behavior.
+> **Note** By default, `render` will sanitize your markup, removing any `script`
+> tags. Pass `{ sanitize: false }` to disable this behavior.
 
 ```js
 import { parse, render } from "fluxhtml";
@@ -67,10 +72,12 @@ const output = await render(ast);
 
 ### `transform`
 
-The `transform` function provides a straight-forward way to modify any markup. Sanitize content, swap in-place elements/Components, and more using a set of built-in transformers, or write your own custom transformer.
+The `transform` function provides a straight-forward way to modify any markup.
+Sanitize content, swap in-place elements/Components, and more using a set of
+built-in transformers, or write your own custom transformer.
 
 ```js
-import { transform, html } from "fluxhtml";
+import { html, transform } from "fluxhtml";
 import swap from "fluxhtml/transformers/swap";
 import sanitize from "fluxhtml/transformers/sanitize";
 
@@ -87,7 +94,8 @@ console.log(output); // <h2>Hello world!</h2>
 
 ### Sanitization
 
-`fluxhtml/transformers/sanitize` implements an extension of the [HTML Sanitizer API](https://developer.mozilla.org/en-US/docs/Web/API/Sanitizer/Sanitizer).
+`fluxhtml/transformers/sanitize` implements an extension of the
+[HTML Sanitizer API](https://developer.mozilla.org/en-US/docs/Web/API/Sanitizer/Sanitizer).
 
 | Option              | Type                       | Default      | Description                                                                                                                                                                                                                               |
 | ------------------- | -------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -102,4 +110,8 @@ console.log(output); // <h2>Hello world!</h2>
 
 ## Acknowledgements
 
-This library is based on and heavily inspired by [Nate Moore](https://github.com/natemoo-re)'s excellent [`ultrahtml`](https://github.com/natemoo-re/ultrahtml) library. While `fluxhtml` uses a different parser and has some additional functionality, the API is largely identical to that of `ultrahtml`.
+This library is based on and heavily inspired by
+[Nate Moore](https://github.com/natemoo-re)'s excellent
+[`ultrahtml`](https://github.com/natemoo-re/ultrahtml) library. While `fluxhtml`
+uses a different parser and has some additional functionality, the API is
+largely identical to that of `ultrahtml`.
