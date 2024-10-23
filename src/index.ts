@@ -209,6 +209,31 @@ export function parse(html: string): DocumentNode {
 }
 // #endregion parsing
 
+// #region unsafe
+/**
+ * Marks the given string as "unsafe," preventing it from being escaped/sanitized
+ * when the document is rendered.
+ * @param str A string of text.
+ * @returns A marked token indicating that the given text should not be escaped.
+ */
+export function __unsafeHTML(str: string): UnsafeHTML {
+	return mark(str);
+}
+
+/**
+ * Assigns a custom render function to the given node.
+ * @param node Node to assign a custom render function.
+ * @param fn Render function.
+ */
+export function __unsafeRenderFn(node: ElementNode, fn: RenderFunction): ElementNode {
+	Object.defineProperty(node, RenderFn, {
+		value: fn,
+		enumerable: false,
+	});
+	return node;
+}
+// #endregion unsafe
+
 // #region rendering
 function escapeHTML(str: string): string {
 	return str.replace(/[&<>]/g, (c) => ESCAPE_CHARS[c] || c);
