@@ -133,6 +133,11 @@ export type Node =
 	| TextNode
 	| CommentNode
 	| DoctypeNode;
+
+type NodeWithChildren = DocumentNode | ElementNode;
+function hasChildren(node: Node): node is NodeWithChildren {
+	return "children" in node && Array.isArray(node.children);
+}
 // #endregion nodes
 
 // #region parsing
@@ -240,6 +245,52 @@ export function __unsafeRenderFn(node: ElementNode, fn: RenderFunction): Element
 	return node;
 }
 // #endregion unsafe
+
+// #region walk
+export type Visitor = (
+	node: Node,
+	parent?: NodeWithChildren,
+	index?: number,
+) => void | Promise<void>;
+
+export type VisitorSync = (
+	node: Node,
+	parent?: NodeWithChildren,
+	index?: number,
+) => void;
+
+/**
+ * Traverse the AST of the provided node, running an asynchronous callback for
+ * each visited node. Nodes are traversed in depth-first order.
+ * @param node AST to walk
+ * @param callback Function to be applied on each encountered node
+ */
+export function walk(node: Node, callback: Visitor): Promise<void> {
+	async function visit(node: Node, parent?: NodeWithChildren, index?: number) {
+		await callback(node, parent, index);
+		if (hasChildren(node)) {
+			await Promise.all(node.children.map((child, i) => visit(child, node, i)));
+		}
+	}
+	return visit(node);
+}
+
+/**
+ * Traverse the AST of the provided node, running a synchronous callback for
+ * each visited node. Nodes are traversed in depth-first order.
+ * @param node AST to walk
+ * @param callback Function to be applied on each encountered node
+ */
+export function walkSync(node: Node, callback: VisitorSync): void {
+	function visit(node: Node, parent?: NodeWithChildren, index?: number) {
+		callback(node, parent, index);
+		if (hasChildren(node)) {
+			node.children.map((child, i) => visit(child, node, i));
+		}
+	}
+	visit(node);
+}
+// #endregion walk
 
 // #region rendering
 function escapeHTML(str: string): string {
