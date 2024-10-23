@@ -11,6 +11,7 @@ import { Parser } from "htmlparser2";
 
 export * from "./nodes.ts";
 
+// #region constants
 const VOID_TAGS = new Set<string>([
 	"area",
 	"base",
@@ -28,6 +29,15 @@ const VOID_TAGS = new Set<string>([
 	"track",
 	"wbr",
 ]);
+const ESCAPE_CHARS: Record<string, string> = {
+	"&": "&amp;",
+	"<": "&lt;",
+	">": "&gt;",
+};
+// #endregion constants
+
+// #region symbols
+export const Fragment = Symbol("Fragment");
 
 const HTMLString = Symbol("HTML String");
 const AttrString = Symbol("AttrString");
@@ -69,7 +79,9 @@ export type RenderFunction = (
 	attributes: Record<string, string>,
 	children: Node[],
 ) => string | UnsafeHTML | Promise<string | UnsafeHTML>;
+// #endregion symbols
 
+// #region nodes
 type BaseNode = {
 	type: NodeType;
 	loc: Location;
@@ -89,7 +101,6 @@ export type DocumentNode = {
 	children: Node[];
 };
 
-export const Fragment = Symbol("Fragment");
 export type ElementNode = ParentNode & {
 	type: typeof ELEMENT_NODE;
 	name: string | typeof Fragment;
@@ -115,7 +126,14 @@ export type Node =
 	| TextNode
 	| CommentNode
 	| DoctypeNode;
+// #endregion nodes
 
+// #region parsing
+/**
+ * Parses the provided HTML-like document into an AST.
+ * @param html A string of HTML-like markup.
+ * @returns The parsed document.
+ */
 export function parse(html: string): DocumentNode {
 	const doc: DocumentNode = {
 		type: DOCUMENT_NODE,
@@ -189,16 +207,13 @@ export function parse(html: string): DocumentNode {
 
 	return doc;
 }
+// #endregion parsing
 
-const ESCAPE_CHARS: Record<string, string> = {
-	"&": "&amp;",
-	"<": "&lt;",
-	">": "&gt;",
-};
+// #region rendering
 function escapeHTML(str: string): string {
 	return str.replace(/[&<>]/g, (c) => ESCAPE_CHARS[c] || c);
 }
-export function attrs(attributes: Record<string, string>) {
+function attrs(attributes: Record<string, string>) {
 	let attrStr = "";
 	for (const [key, value] of Object.entries(attributes)) {
 		attrStr += ` ${key}="${value}"`;
@@ -296,3 +311,4 @@ export function renderSync(node: Node | Node[]): string {
 			return renderLeaf(node);
 	}
 }
+// #endregion rendering
