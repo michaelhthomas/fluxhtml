@@ -7,6 +7,7 @@
     "jsr:@std/internal@^1.0.4": "1.0.4",
     "jsr:@std/testing@*": "1.0.3",
     "npm:@biomejs/biome@^1.9.4": "1.9.4",
+    "npm:@types/markdown-it@^14.1.2": "14.1.2",
     "npm:htmlparser2@^9.1.0": "9.1.0",
     "npm:markdown-it@^14.1.0": "14.1.0"
   },
@@ -72,6 +73,19 @@
     },
     "@biomejs/cli-win32-x64@1.9.4": {
       "integrity": "sha512-8Y5wMhVIPaWe6jw2H+KlEm4wP/f7EW3810ZLmDlrEEy5KvBsb9ECEfu/kMWD484ijfQ8+nIi0giMgu9g1UAuuA=="
+    },
+    "@types/linkify-it@5.0.0": {
+      "integrity": "sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q=="
+    },
+    "@types/markdown-it@14.1.2": {
+      "integrity": "sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog==",
+      "dependencies": [
+        "@types/linkify-it",
+        "@types/mdurl"
+      ]
+    },
+    "@types/mdurl@2.0.0": {
+      "integrity": "sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg=="
     },
     "argparse@2.0.1": {
       "integrity": "sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q=="
@@ -147,6 +161,7 @@
     "packageJson": {
       "dependencies": [
         "npm:@biomejs/biome@^1.9.4",
+        "npm:@types/markdown-it@^14.1.2",
         "npm:htmlparser2@^9.1.0",
         "npm:markdown-it@^14.1.0"
       ]
