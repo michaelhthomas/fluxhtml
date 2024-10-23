@@ -1,17 +1,12 @@
-import {
-	DOCUMENT_NODE,
-	DOCTYPE_NODE,
-	ELEMENT_NODE,
-	TEXT_NODE,
-	COMMENT_NODE,
-	type Location,
-	type NodeType,
-} from "./nodes.ts";
 import { Parser } from "htmlparser2";
 
-export * from "./nodes.ts";
-
 // #region constants
+export const DOCUMENT_NODE = 0;
+export const ELEMENT_NODE = 1;
+export const TEXT_NODE = 2;
+export const COMMENT_NODE = 3;
+export const DOCTYPE_NODE = 4;
+
 const VOID_TAGS = new Set<string>([
 	"area",
 	"base",
@@ -82,6 +77,18 @@ export type RenderFunction = (
 // #endregion symbols
 
 // #region nodes
+export type NodeType =
+	| typeof DOCUMENT_NODE
+	| typeof ELEMENT_NODE
+	| typeof TEXT_NODE
+	| typeof COMMENT_NODE
+	| typeof DOCTYPE_NODE;
+
+export type Location = {
+	start: number;
+	end: number;
+};
+
 type BaseNode = {
 	type: NodeType;
 	loc: Location;
