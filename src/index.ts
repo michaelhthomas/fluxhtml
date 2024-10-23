@@ -89,7 +89,10 @@ export type Location = {
 	end: number;
 };
 
+const NodeSymbol = Symbol("Node");
+
 type BaseNode = {
+	[NodeSymbol]: true;
 	type: NodeType;
 	loc: Location;
 	parent: NodeWithChildren;
@@ -104,6 +107,7 @@ type ParentNode = BaseNode & {
 };
 
 export type DocumentNode = {
+	[NodeSymbol]: true;
 	type: typeof DOCUMENT_NODE;
 	children: Node[];
 	parent: undefined;
@@ -135,6 +139,14 @@ export type Node =
 	| CommentNode
 	| DoctypeNode;
 
+function isNode(obj: unknown): obj is Node {
+	return (
+		typeof obj === "object" &&
+		obj != null &&
+		NodeSymbol in obj &&
+		obj[NodeSymbol] === true
+	);
+}
 export type NodeWithChildren = DocumentNode | ElementNode;
 export function hasChildren(node: Node): node is NodeWithChildren {
 	return "children" in node && Array.isArray(node.children);
@@ -149,9 +161,13 @@ export function hasChildren(node: Node): node is NodeWithChildren {
  */
 export function parse(
 	html: string,
-	options: ParserOptions = { decodeEntities: false },
+	options: ParserOptions = {
+		decodeEntities: false,
+		lowerCaseTags: false,
+	},
 ): DocumentNode {
 	const doc: DocumentNode = {
+		[NodeSymbol]: true,
 		type: DOCUMENT_NODE,
 		children: [],
 		parent: undefined,
@@ -162,8 +178,9 @@ export function parse(
 	const parser = new Parser(
 		{
 			onprocessinginstruction(name, data) {
-				if (name === "!doctype") {
+				if (name.toLowerCase() === "!doctype") {
 					const element: DoctypeNode = {
+						[NodeSymbol]: true,
 						type: DOCTYPE_NODE,
 						value: data,
 						parent: currentNode,
@@ -176,6 +193,7 @@ export function parse(
 			},
 			onopentag(name, attributes) {
 				const element: ElementNode = {
+					[NodeSymbol]: true,
 					type: ELEMENT_NODE,
 					name,
 					attributes,
@@ -193,6 +211,7 @@ export function parse(
 			},
 			ontext(text) {
 				const textNode: TextNode = {
+					[NodeSymbol]: true,
 					type: TEXT_NODE,
 					loc: { start: parser.startIndex, end: parser.endIndex },
 					parent: currentNode,
@@ -203,6 +222,7 @@ export function parse(
 			},
 			oncomment(comment) {
 				const commentNode: CommentNode = {
+					[NodeSymbol]: true,
 					type: COMMENT_NODE,
 					loc: { start: parser.startIndex, end: parser.endIndex },
 					parent: currentNode,
@@ -304,12 +324,51 @@ export function walkSync(node: Node, callback: VisitorSync): void {
 function escapeHTML(str: string): string {
 	return str.replace(/[&<>]/g, (c) => ESCAPE_CHARS[c] || c);
 }
-function attrs(attributes: Record<string, string>) {
+export function attrs(attributes: Record<string, string>) {
 	let attrStr = "";
 	for (const [key, value] of Object.entries(attributes)) {
 		attrStr += ` ${key}="${value}"`;
 	}
 	return mark(attrStr, [HTMLString, AttrString]);
+}
+export function html(
+	tmpl: TemplateStringsArray,
+	...vals: (string | MarkedString | Record<string, string> | Node | Node[])[]
+) {
+	let buf = "";
+	for (let i = 0; i < tmpl.length; i++) {
+		buf += tmpl[i];
+		const expr = vals[i];
+		// node or list of nodes
+		if (Array.isArray(expr) || isNode(expr)) {
+			buf += renderSync(expr);
+		}
+		// attributes spread
+		else if (buf.endsWith("...") && expr && typeof expr === "object") {
+			buf = buf.slice(0, -3).trimEnd();
+			buf += attrs(expr).value;
+		}
+		// attributes
+		else if (
+			typeof expr === "object" &&
+			AttrString in expr &&
+			expr[AttrString]
+		) {
+			buf = buf.trimEnd();
+			buf += expr.value;
+		}
+		// unsafe HTML
+		else if (isUnsafe(expr)) {
+			buf += expr.value;
+		}
+		// string
+		else if (typeof expr === "string") {
+			buf += escapeHTML(expr);
+		} else if (expr || expr === 0) {
+			buf += String(expr);
+		}
+	}
+	return mark(buf);
 }
 
 function canSelfClose(node: ElementNode): boolean {
