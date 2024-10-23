@@ -403,3 +403,59 @@ export function renderSync(node: Node | Node[]): string {
 	}
 }
 // #endregion rendering
+
+// #region transform
+export type Transformer = (node: Node) => Node | Promise<Node>;
+export type TransformerSync = (node: Node) => Node;
+
+/**
+ * Transforms the given markup using the supplied transformers, then renders
+ * the resulting document.
+ *
+ * @param markup The markup to be transformed. Either a string, or an already-parsed AST
+ * @param transformers The set of transformers to apply to the document
+ * @returns String containing the transformed markup
+ */
+export async function transform(
+	markup: string | Node,
+	transformers: Transformer[] = [],
+): Promise<string> {
+	if (!Array.isArray(transformers)) {
+		throw new Error(
+			`Invalid second argument for \`transform\`! Expected \`Transformer[]\` but got \`${typeof transformers}\``,
+		);
+	}
+	const doc = typeof markup === "string" ? parse(markup) : markup;
+	let newDoc = doc;
+	for (const t of transformers) {
+		newDoc = await t(newDoc);
+	}
+	return render(newDoc);
+}
+
+/**
+ * Transforms the given markup using the supplied synchronous transformers,
+ * then renders the resulting document.
+ *
+ * @param markup The markup to be transformed. Either a string, or an already-parsed AST.
+ * @param transformers The set of transformers to apply to the document
+ * @returns String containing the transformed markup
+ * @throws If the transformed document contains asynchronous elements
+ */
+export function transformSync(
+	markup: string | Node,
+	transformers: TransformerSync[] = [],
+) {
+	if (!Array.isArray(transformers)) {
+		throw new Error(
+			`Invalid second argument for \`transform\`! Expected \`Transformer[]\` but got \`${typeof transformers}\``,
+		);
+	}
+	const doc = typeof markup === "string" ? parse(markup) : markup;
+	let newDoc = doc;
+	for (const t of transformers) {
+		newDoc = t(newDoc);
+	}
+	return renderSync(newDoc);
+}
+// #endregion
