@@ -1,0 +1,31 @@
+on:
+  push:
+    branches:
+      - main
+name: release-please
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{secrets.RELEASE_PLEASE_TOKEN}}
+          release-type: node
+      - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.release_created }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+        if: ${{ steps.release.outputs.release_created }}
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+        if: ${{ steps.release.outputs.release_created }}
+      - run: deno run -A scripts/build-npm.ts
+        if: ${{ steps.release.outputs.release_created }}
+      - run: npm publish
+        working-directory: ./npm
+        env:
+          NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        if: ${{ steps.release.outputs.release_created }}
