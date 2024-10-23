@@ -1,5 +1,10 @@
-import { type ElementNode, RenderFn, type RenderFunction } from "../index.ts";
-import { type Node, __unsafeRenderFn } from "../index.ts";
+import {
+	type ElementNode,
+	RenderFn,
+	type RenderFunction,
+	type TransformerSync,
+} from "../index.ts";
+import { __unsafeRenderFn, type Node } from "../index.ts";
 import { querySelectorAll } from "../selector.ts";
 
 export type SwapComponents = Record<string, string | RenderFunction>;
@@ -37,7 +42,7 @@ export type SwapComponents = Record<string, string | RenderFunction>;
  *                   are either string tag names or render functions.
  * @returns An AST transformer
  */
-export default function swap(components: SwapComponents = {}) {
+export default function swap(components: SwapComponents = {}): TransformerSync {
 	return (doc: Node): Node => {
 		for (const [selector, component] of Object.entries(components)) {
 			for (const node of querySelectorAll(doc, selector)) {

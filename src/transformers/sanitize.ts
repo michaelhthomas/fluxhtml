@@ -1,10 +1,11 @@
 import {
-	type ElementNode,
 	ELEMENT_NODE,
-	type Node,
-	walkSync,
-	type NodeWithChildren,
+	type ElementNode,
 	Fragment,
+	type Node,
+	type NodeWithChildren,
+	type TransformerSync,
+	walkSync,
 } from "../index.ts";
 
 export interface SanitizeOptions {
@@ -58,8 +59,9 @@ type NodeKind = "element" | "component" | "custom-element";
 function getNodeKind(node: ElementNode): NodeKind {
 	if (node.name === Fragment) return "element";
 	if (node.name.includes("-")) return "custom-element";
-	if (/[\_\$A-Z]/.test(node.name[0]) || node.name.includes("."))
+	if (/[\_\$A-Z]/.test(node.name[0]) || node.name.includes(".")) {
 		return "component";
+	}
 	return "element";
 }
 
@@ -116,23 +118,25 @@ function sanitizeElement(
 	const kind = getNodeKind(node);
 	const { name } = node;
 	const action = getAction(name, kind, opts);
-	if (action === "drop")
+	if (action === "drop") {
 		return () => {
 			parent.children = parent.children.filter((child: Node) => child !== node);
 		};
-	if (action === "block")
+	}
+	if (action === "block") {
 		return () => {
 			parent.children = parent.children.flatMap((child: Node) =>
 				child === node ? child.children : child,
 			);
 		};
+	}
 
 	return () => {
 		node.attributes = sanitizeAttributes(node, opts);
 	};
 }
 
-export default function sanitize(opts?: SanitizeOptions) {
+export default function sanitize(opts?: SanitizeOptions): TransformerSync {
 	const sanitize = resolveSantizeOptions(opts);
 	return (doc: Node): Node => {
 		const actions: (() => void)[] = [];

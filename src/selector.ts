@@ -1,12 +1,12 @@
-import { is, selectOne, selectAll, type Options } from "css-select";
+import { is, type Options, selectAll, selectOne } from "css-select";
 import {
 	DOCUMENT_NODE,
 	ELEMENT_NODE,
+	type ElementNode,
 	Fragment,
 	hasChildren,
-	TEXT_NODE,
-	type ElementNode,
 	type Node,
+	TEXT_NODE,
 } from "./index.ts";
 
 type Adapter<Node, ElementNode extends Node> = Options<

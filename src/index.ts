@@ -324,7 +324,7 @@ export function walkSync(node: Node, callback: VisitorSync): void {
 function escapeHTML(str: string): string {
 	return str.replace(/[&<>]/g, (c) => ESCAPE_CHARS[c] || c);
 }
-export function attrs(attributes: Record<string, string>) {
+export function attrs(attributes: Record<string, string>): MarkedString {
 	let attrStr = "";
 	for (const [key, value] of Object.entries(attributes)) {
 		attrStr += ` ${key}="${value}"`;
@@ -334,7 +334,7 @@ export function attrs(attributes: Record<string, string>) {
 export function html(
 	tmpl: TemplateStringsArray,
 	...vals: (string | MarkedString | Record<string, string> | Node | Node[])[]
-) {
+): UnsafeHTML {
 	let buf = "";
 	for (let i = 0; i < tmpl.length; i++) {
 		buf += tmpl[i];
@@ -386,10 +386,11 @@ function renderElementSync(node: ElementNode): string {
 	const { name, attributes = {}, children } = node;
 	if (RenderFn in node && node[RenderFn] != null) {
 		const value = node[RenderFn](attributes, children);
-		if (value instanceof Promise)
+		if (value instanceof Promise) {
 			throw new Error(
 				"Called renderElementSync on a tree containing async elements.",
 			);
+		}
 		if (isUnsafe(value)) return value.value;
 		return escapeHTML(String(value));
 	}
@@ -435,10 +436,11 @@ function renderLeaf(node: TextNode | CommentNode | DoctypeNode) {
  * @returns
  */
 export async function render(node: Node | Node[]): Promise<string> {
-	if (Array.isArray(node))
+	if (Array.isArray(node)) {
 		return Promise.all(node.map((child) => render(child))).then((res) =>
 			res.join(""),
 		);
+	}
 	switch (node.type) {
 		case DOCUMENT_NODE:
 			return await render(node.children);
@@ -450,8 +452,9 @@ export async function render(node: Node | Node[]): Promise<string> {
 }
 
 export function renderSync(node: Node | Node[]): string {
-	if (Array.isArray(node))
+	if (Array.isArray(node)) {
 		return node.map((child) => renderSync(child)).join("");
+	}
 	switch (node.type) {
 		case DOCUMENT_NODE:
 			return renderSync(node.children);
@@ -504,7 +507,7 @@ export async function transform(
 export function transformSync(
 	markup: string | Node,
 	transformers: TransformerSync[] = [],
-) {
+): string {
 	if (!Array.isArray(transformers)) {
 		throw new Error(
 			`Invalid second argument for \`transform\`! Expected \`Transformer[]\` but got \`${typeof transformers}\``,
