@@ -1,4 +1,12 @@
 {
+	"name": "@michaelhthomas/fluxhtml",
+	"version": "0.1.0",
+	"exports": {
+		".": "./src/index.ts",
+		"./selector": "./src/selector.ts",
+		"./transformers/sanitize": "./src/transformers/sanitize.ts",
+		"./transformers/swap": "./src/transformers/swap.ts"
+	},
 	"tasks": {
 		"dev": "deno run --watch main.ts"
 	},

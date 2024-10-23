@@ -6,12 +6,14 @@ name: release-please
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
           token: ${{secrets.RELEASE_PLEASE_TOKEN}}
-          release-type: node
       - uses: actions/checkout@v4
         if: ${{ steps.release.outputs.release_created }}
       - uses: actions/setup-node@v4
@@ -28,5 +30,7 @@ jobs:
       - run: npm publish
         working-directory: ./npm
         env:
-          NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        if: ${{ steps.release.outputs.release_created }}
+      - run: deno publish
         if: ${{ steps.release.outputs.release_created }}
