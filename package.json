@@ -1,6 +1,6 @@
 {
 	"name": "fluxhtml",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "Easily parse, transform, and serialize HTML-like markup languages.",
 	"repository": {
 		"type": "git",
@@ -10,7 +10,11 @@
 		"url": "https://github.com/michaelhthomas/fluxhtml/issues"
 	},
 	"homepage": "https://github.com/michaelhthomas/fluxhtml#README",
-	"keywords": ["html", "template", "manipulation"],
+	"keywords": [
+		"html",
+		"template",
+		"manipulation"
+	],
 	"author": "Michael Thomas",
 	"license": "MIT",
 	"dependencies": {
