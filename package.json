@@ -1,11 +1,7 @@
 {
 	"name": "fluxhtml",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"description": "Easily parse, transform, and serialize HTML-like markup languages.",
-	"exports": {
-		".": "./src/index.ts",
-		"./selectors": "./src/selectors.ts"
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/michaelhthomas/fluxhtml"
@@ -14,9 +10,6 @@
 		"url": "https://github.com/michaelhthomas/fluxhtml/issues"
 	},
 	"homepage": "https://github.com/michaelhthomas/fluxhtml#README",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
 	"keywords": ["html", "template", "manipulation"],
 	"author": "Michael Thomas",
 	"license": "MIT",
