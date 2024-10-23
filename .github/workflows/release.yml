@@ -25,6 +25,8 @@ jobs:
         with:
           deno-version: v2.x
         if: ${{ steps.release.outputs.release_created }}
+      - run: deno install
+        if: ${{ steps.release.outputs.release_created }}
       - run: deno run -A scripts/build-npm.ts
         if: ${{ steps.release.outputs.release_created }}
       - run: npm publish
