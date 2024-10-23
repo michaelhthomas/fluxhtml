@@ -92,7 +92,7 @@ export type Location = {
 type BaseNode = {
 	type: NodeType;
 	loc: Location;
-	parent: Node;
+	parent: NodeWithChildren;
 };
 
 type LiteralNode = BaseNode & {
@@ -106,6 +106,7 @@ type ParentNode = BaseNode & {
 export type DocumentNode = {
 	type: typeof DOCUMENT_NODE;
 	children: Node[];
+	parent: undefined;
 };
 
 export type ElementNode = ParentNode & {
@@ -134,8 +135,8 @@ export type Node =
 	| CommentNode
 	| DoctypeNode;
 
-type NodeWithChildren = DocumentNode | ElementNode;
-function hasChildren(node: Node): node is NodeWithChildren {
+export type NodeWithChildren = DocumentNode | ElementNode;
+export function hasChildren(node: Node): node is NodeWithChildren {
 	return "children" in node && Array.isArray(node.children);
 }
 // #endregion nodes
@@ -153,6 +154,7 @@ export function parse(
 	const doc: DocumentNode = {
 		type: DOCUMENT_NODE,
 		children: [],
+		parent: undefined,
 	};
 	let currentNode: DocumentNode | ElementNode = doc;
 	const stack: (DocumentNode | ElementNode)[] = [];

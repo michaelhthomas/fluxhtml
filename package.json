@@ -2,7 +2,10 @@
 	"name": "fluxhtml",
 	"version": "1.0.0",
 	"description": "Easily parse, transform, and serialize HTML-like markup languages.",
-	"main": "src/index.ts",
+	"exports": {
+		".": "./src/index.ts",
+		"./selectors": "./src/selectors.ts"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/michaelhthomas/fluxhtml"
@@ -18,6 +21,7 @@
 	"author": "Michael Thomas",
 	"license": "MIT",
 	"dependencies": {
+		"css-select": "^5.1.0",
 		"htmlparser2": "^9.1.0"
 	},
 	"devDependencies": {
