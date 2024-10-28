@@ -1,12 +1,25 @@
-import { is, type Options, selectAll, selectOne } from "css-select";
+/**
+ * @module
+ * Provides functionality for executing CSS selectors on markup nodes.
+ *
+ * @example
+ * ```ts
+ * const doc = parse("<div><h1>Hello world</h1></div>");
+ * const el = querySelector(doc, "h1");
+ * console.log(await render(el));
+ * // <h1>Hello world</h1>
+ * ```
+ */
+
+import { type Options, is, selectAll, selectOne } from "css-select";
 import {
 	DOCUMENT_NODE,
 	ELEMENT_NODE,
 	type ElementNode,
 	Fragment,
-	hasChildren,
 	type Node,
 	TEXT_NODE,
+	hasChildren,
 } from "./index.ts";
 
 type Adapter<Node, ElementNode extends Node> = Options<
@@ -90,10 +103,24 @@ const options: Options<Node, ElementNode> = {
 	xmlMode: true,
 };
 
+/**
+ * Checks if the given selector matches the given node.
+ * @param node The node to test against
+ * @param selector The selector to test on the node
+ * @returns `true` if the selector matches the provided node, `false` otherwise
+ */
 export function matches(node: ElementNode, selector: string): boolean {
 	return is(node, selector, options);
 }
 
+/**
+ * Equivalent to the DOM `document.querySelector` method. Executes the given
+ * selector on the provided node and its children.
+ * @param node The node to query
+ * @param selector The selector to test nodes against
+ * @returns The first node which matches the given selector, or `null` if no
+ *          nodes match
+ */
 export function querySelector(
 	node: Node,
 	selector: string,
@@ -101,6 +128,13 @@ export function querySelector(
 	return selectOne(selector, node, options);
 }
 
+/**
+ * Equivalent to the DOM `document.querySelectorAll` method. Executes the
+ * given selector on the provided node and its children.
+ * @param node The node to query
+ * @param selector The selector to test nodes against
+ * @returns A list of nodes that match the given selector
+ */
 export function querySelectorAll(node: Node, selector: string): ElementNode[] {
 	return selectAll(selector, node, options);
 }

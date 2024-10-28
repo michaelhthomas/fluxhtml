@@ -32,6 +32,9 @@ const ESCAPE_CHARS: Record<string, string> = {
 // #endregion constants
 
 // #region symbols
+/**
+ * An element which will not be rendered, and will be replaced by its children.
+ */
 export const Fragment = Symbol("Fragment");
 
 const HTMLString = Symbol("HTML String");
@@ -106,6 +109,9 @@ type ParentNode = BaseNode & {
 	children: Node[];
 };
 
+/**
+ * Node representing the root of a parsed document.
+ */
 export type DocumentNode = {
 	[NodeSymbol]: true;
 	type: typeof DOCUMENT_NODE;
@@ -113,6 +119,9 @@ export type DocumentNode = {
 	parent: undefined;
 };
 
+/**
+ * Node representing an HTML element in the DOM.
+ */
 export type ElementNode = ParentNode & {
 	type: typeof ELEMENT_NODE;
 	name: string | typeof Fragment;
@@ -120,18 +129,37 @@ export type ElementNode = ParentNode & {
 	[RenderFn]?: RenderFunction;
 };
 
+/**
+ * Node representing plain text in the DOM.
+ */
 export type TextNode = LiteralNode & {
 	type: typeof TEXT_NODE;
 };
 
+/**
+ * Node representing an HTML comment.
+ */
 export type CommentNode = LiteralNode & {
 	type: typeof COMMENT_NODE;
 };
 
+/**
+ * Node representing an HTML doctype declaration.
+ */
 export type DoctypeNode = LiteralNode & {
 	type: typeof DOCTYPE_NODE;
 };
 
+/**
+ * Type representing any node in the DOM. To determine the type of a node,
+ * compare `node.type` to one of the exported node type constants.
+ *
+ * For example, to determine if a node is an element, use a guard as follows:
+ * ```ts
+ * if (node.type === ELEMENT_NODE) {
+ *   // node is `ElementNode`
+ * }
+ */
 export type Node =
 	| DocumentNode
 	| ElementNode
@@ -147,7 +175,13 @@ function isNode(obj: unknown): obj is Node {
 		obj[NodeSymbol] === true
 	);
 }
+/**
+ * Type representing any node which has child nodes.
+ */
 export type NodeWithChildren = DocumentNode | ElementNode;
+/**
+ * Checks if a given node has children.
+ */
 export function hasChildren(node: Node): node is NodeWithChildren {
 	return "children" in node && Array.isArray(node.children);
 }
@@ -324,6 +358,9 @@ export function walkSync(node: Node, callback: VisitorSync): void {
 function escapeHTML(str: string): string {
 	return str.replace(/[&<>]/g, (c) => ESCAPE_CHARS[c] || c);
 }
+/**
+ * Converts a given set of attributes into an HTML string.
+ */
 export function attrs(attributes: Record<string, string>): MarkedString {
 	let attrStr = "";
 	for (const [key, value] of Object.entries(attributes)) {
@@ -331,6 +368,22 @@ export function attrs(attributes: Record<string, string>): MarkedString {
 	}
 	return mark(attrStr, [HTMLString, AttrString]);
 }
+
+/**
+ * Template function which enables authoring render functions using HTML-like strings.
+ *
+ * This is best demonstrated using the `swap` transformer. Consider the
+ * following example:
+ * ```ts
+ * const output = await transform(`<h1>Hello world!</h1>`, [
+ *   swap({
+ *     h1: (props, children) => html`<h2 class="ultra">${children}</h2>`,
+ *   }),
+ * ]);
+ * console.log(output);
+ * // <h2 class="ultra">Hello world!</h2>
+ * ```
+ */
 export function html(
 	tmpl: TemplateStringsArray,
 	...vals: (string | MarkedString | Record<string, string> | Node | Node[])[]
@@ -432,8 +485,8 @@ function renderLeaf(node: TextNode | CommentNode | DoctypeNode) {
 
 /**
  * Serializes the given node to a string.
- * @param node
- * @returns
+ * @param node The node or list of nodes to serialize
+ * @returns A string of HTML
  */
 export async function render(node: Node | Node[]): Promise<string> {
 	if (Array.isArray(node)) {
@@ -451,6 +504,12 @@ export async function render(node: Node | Node[]): Promise<string> {
 	}
 }
 
+/**
+ * Serializes the given node to a string synchronously.
+ * @param node The node or list of nodes to serialize
+ * @returns A string of HTML
+ * @throws If an asynchronous render function is encountered
+ */
 export function renderSync(node: Node | Node[]): string {
 	if (Array.isArray(node)) {
 		return node.map((child) => renderSync(child)).join("");
