@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/michaelhthomas/fluxhtml/compare/fluxhtml-v1.0.0...fluxhtml-v1.1.0) (2024-11-07)
+
+
+### Features
+
+* support JSX ([92a5933](https://github.com/michaelhthomas/fluxhtml/commit/92a5933af5c5b3708e9fd425a3a3979c8145c38a))
+
+
+### Bug Fixes
+
+* **jsx:** add return type to createVNode ([20a9824](https://github.com/michaelhthomas/fluxhtml/commit/20a98242b0f41c69856aec83aade92cdd22a359f))
+
 ## 1.0.0 (2024-10-23)
 
 
