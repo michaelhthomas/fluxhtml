@@ -92,7 +92,7 @@ export type Location = {
 	end: number;
 };
 
-const NodeSymbol = Symbol("Node");
+export const NodeSymbol = Symbol("Node");
 
 type BaseNode = {
 	[NodeSymbol]: true;
@@ -475,7 +475,7 @@ async function renderElement(node: ElementNode): Promise<string> {
 function renderLeaf(node: TextNode | CommentNode | DoctypeNode) {
 	switch (node.type) {
 		case TEXT_NODE:
-			return `${node.value}`;
+			return node.value;
 		case COMMENT_NODE:
 			return `<!--${node.value}-->`;
 		case DOCTYPE_NODE:
@@ -580,3 +580,48 @@ export function transformSync(
 	return renderSync(newDoc);
 }
 // #endregion
+
+// #region jsx
+/**
+ * Helper function used for JSX rendering. To utilize `fluxhtml` with JSX, use
+ * the `fluxhtml/jsx-runtime` module.
+ */
+export function createVNode(
+	type: string | typeof Fragment | RenderFunction,
+	{ children, ...attributes }: Record<string, unknown>,
+	_key: string,
+	__self: string,
+	__source: string,
+) {
+	const vnode: ElementNode = {
+		[NodeSymbol]: true,
+		type: ELEMENT_NODE,
+		name: typeof type === "function" ? type.name : type,
+		attributes: Object.fromEntries(
+			Object.entries(attributes).map(([k, v]) => [k, String(v)]),
+		),
+		children: (Array.isArray(children) ? children : [children]).map((child) => {
+			if (typeof child === "string") {
+				return {
+					type: TEXT_NODE,
+					value: escapeHTML(child),
+				};
+			}
+			if (child) return child;
+			return [];
+		}),
+		parent: undefined as unknown as NodeWithChildren,
+		loc: undefined as unknown as Location,
+	};
+
+	for (const child of vnode.children) {
+		child.parent = vnode;
+	}
+
+	if (typeof type === "function") {
+		__unsafeRenderFn(vnode, type);
+	}
+
+	return vnode;
+}
+// #endregion jsx

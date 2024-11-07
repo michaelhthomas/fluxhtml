@@ -8,6 +8,7 @@ await build({
 	test: false,
 	entryPoints: [
 		"./src/index.ts",
+		{ name: "./jsx-runtime", path: "./src/jsx-runtime.ts" },
 		{ name: "./selector", path: "./src/selector.ts" },
 		...Array.from(expandGlobSync("./src/transformers/*.ts")).map((ent) => ({
 			name: `./transformers/${ent.name.split(".")[0]}`,

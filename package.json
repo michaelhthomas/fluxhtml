@@ -1,29 +1,29 @@
 {
-	"name": "fluxhtml",
-	"version": "1.0.0",
-	"description": "Easily parse, transform, and serialize HTML-like markup languages.",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/michaelhthomas/fluxhtml"
-	},
-	"bugs": {
-		"url": "https://github.com/michaelhthomas/fluxhtml/issues"
-	},
-	"homepage": "https://github.com/michaelhthomas/fluxhtml#README",
-	"keywords": [
-		"html",
-		"template",
-		"manipulation"
-	],
-	"author": "Michael Thomas",
-	"license": "MIT",
-	"dependencies": {
-		"css-select": "^5.1.0",
-		"htmlparser2": "^9.1.0"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
-		"@types/markdown-it": "^14.1.2",
-		"markdown-it": "^14.1.0"
-	}
+  "name": "fluxhtml",
+  "version": "1.0.0",
+  "description": "Easily parse, transform, and serialize HTML-like markup languages.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michaelhthomas/fluxhtml"
+  },
+  "bugs": {
+    "url": "https://github.com/michaelhthomas/fluxhtml/issues"
+  },
+  "homepage": "https://github.com/michaelhthomas/fluxhtml#README",
+  "keywords": [
+    "html",
+    "template",
+    "manipulation"
+  ],
+  "author": "Michael Thomas",
+  "license": "MIT",
+  "dependencies": {
+    "css-select": "^5.1.0",
+    "htmlparser2": "^9.1.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/markdown-it": "^14.1.2",
+    "markdown-it": "^14.1.0"
+  }
 }
