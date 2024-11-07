@@ -17,5 +17,8 @@
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
     "$self/jsx-runtime": "./src/jsx-runtime.ts"
+  },
+  "lint": {
+    "include": ["src", "test", "scripts"]
   }
 }
