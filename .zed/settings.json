@@ -8,6 +8,17 @@
 			"name": "biome"
 		}
 	},
+	"languages": {
+		"Nix": {
+			"formatter": {
+				"external": {
+					"command": "alejandra",
+					"arguments": ["-qq", "-"]
+				}
+			},
+			"format_on_save": "on"
+		}
+	},
 	"code_actions_on_format": {
 		"source.fixAll.biome": true,
 		"source.organizeImports.biome": true

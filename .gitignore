@@ -1,3 +1,6 @@
 node_modules/
 dist/
 npm/
+.devenv
+.direnv
+.DS_Store

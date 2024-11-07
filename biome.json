@@ -7,7 +7,13 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": ["package.json", "deno.json", ".release-please-manifest.json"]
+		"ignore": [
+			"package.json",
+			"deno.json",
+			".release-please-manifest.json",
+			".direnv",
+			".devenv"
+		]
 	},
 	"formatter": {
 		"enabled": true,
