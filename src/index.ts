@@ -395,13 +395,11 @@ export function html(
 		// node or list of nodes
 		if (Array.isArray(expr) || isNode(expr)) {
 			buf += renderSync(expr);
-		}
-		// attributes spread
+		} // attributes spread
 		else if (buf.endsWith("...") && expr && typeof expr === "object") {
 			buf = buf.slice(0, -3).trimEnd();
 			buf += attrs(expr).value;
-		}
-		// attributes
+		} // attributes
 		else if (
 			typeof expr === "object" &&
 			AttrString in expr &&
@@ -409,12 +407,10 @@ export function html(
 		) {
 			buf = buf.trimEnd();
 			buf += expr.value;
-		}
-		// unsafe HTML
+		} // unsafe HTML
 		else if (isUnsafe(expr)) {
 			buf += expr.value;
-		}
-		// string
+		} // string
 		else if (typeof expr === "string") {
 			buf += escapeHTML(expr);
 		} else if (expr || expr === 0) {
@@ -592,7 +588,7 @@ export function createVNode(
 	_key: string,
 	__self: string,
 	__source: string,
-) {
+): ElementNode {
 	const vnode: ElementNode = {
 		[NodeSymbol]: true,
 		type: ELEMENT_NODE,
