@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/michaelhthomas/fluxhtml/compare/fluxhtml-v1.1.0...fluxhtml-v1.2.0) (2025-09-12)
+
+
+### Features
+
+* add textContent helper ([d667865](https://github.com/michaelhthomas/fluxhtml/commit/d6678652a3fa5a9b08ea405f5ee00900e17da4bd))
+
 ## [1.1.0](https://github.com/michaelhthomas/fluxhtml/compare/fluxhtml-v1.0.0...fluxhtml-v1.1.0) (2024-11-07)
 
 
