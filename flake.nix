@@ -1,8 +1,6 @@
 {
   inputs = {
     nixpkgs.url = "github:cachix/devenv-nixpkgs/rolling";
-    unstable.url = "nixpkgs/nixos-unstable";
-    master.url = "github:NixOS/nixpkgs";
     systems.url = "github:nix-systems/default";
     devenv.url = "github:cachix/devenv";
     devenv.inputs.nixpkgs.follows = "nixpkgs";
@@ -16,8 +14,6 @@
   outputs = {
     self,
     nixpkgs,
-    unstable,
-    master,
     devenv,
     systems,
     ...
@@ -32,8 +28,6 @@
       forEachSystem
       (system: let
         pkgs = nixpkgs.legacyPackages.${system};
-        unstablePkgs = unstable.legacyPackages.${system};
-        masterPkgs = master.legacyPackages.${system};
       in {
         default = devenv.lib.mkShell {
           inherit inputs pkgs;
@@ -41,7 +35,7 @@
             {
               languages.deno = {
                 enable = true;
-                package = masterPkgs.deno;
+                package = pkgs.deno;
               };
             }
           ];
