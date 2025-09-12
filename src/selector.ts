@@ -18,8 +18,8 @@ import {
 	type ElementNode,
 	Fragment,
 	type Node,
-	TEXT_NODE,
 	hasChildren,
+	textContent,
 } from "./index.ts";
 
 type Adapter<Node, ElementNode extends Node> = Options<
@@ -46,10 +46,7 @@ const astAdapter: Adapter<Node, ElementNode> = {
 	getSiblings: (node) =>
 		node.type === DOCUMENT_NODE ? [node] : node.parent.children,
 	getText(node) {
-		if (node.type === ELEMENT_NODE && node.name === "br") return "\n";
-		if (hasChildren(node)) return node.children.map(this.getText).join("");
-		if (node.type === TEXT_NODE) return node.value;
-		return "";
+		return textContent(node);
 	},
 	hasAttrib: (node, name) => Object.hasOwn(node.attributes, name),
 	removeSubsets(nodes) {

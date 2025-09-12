@@ -354,6 +354,24 @@ export function walkSync(node: Node, callback: VisitorSync): void {
 }
 // #endregion walk
 
+// #region textContent
+/**
+ * Returns the text content of a node and all its descendants, similar to the
+ * browser's Node.textContent property. This function concatenates all text
+ * content from descendant text nodes.
+ * @param node The node to extract text content from
+ * @returns A string containing the concatenated text of all descendant text nodes
+ */
+export function textContent(node: Node): string {
+	if (node.type === ELEMENT_NODE && node.name === "br") return "\n";
+	if (hasChildren(node)) {
+		return node.children.map(textContent).join("");
+	}
+	if (node.type === TEXT_NODE) return node.value;
+	return "";
+}
+// #endregion textContent
+
 // #region rendering
 function escapeHTML(str: string): string {
 	return str.replace(/[&<>]/g, (c) => ESCAPE_CHARS[c] || c);
